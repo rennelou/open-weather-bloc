@@ -8,10 +8,9 @@ void main() {
 
       final cache = {'Rio de Janeiro', 'Sao Paulo', 'Santos'};
 
-      final pair = bloc.onSearchEvent('Sao Paulo', cache);
+      final result = bloc.onSearchEvent('Sao Paulo', cache);
 
-      expect(pair.result.single, 'Sao Paulo');
-      assertCachesEquivalent(pair.cache, cache);
+      expect(result.single, 'Sao Paulo');
     });
 
     test('without filter', () {
@@ -19,10 +18,9 @@ void main() {
 
       final cache = {'Rio de Janeiro', 'Sao Paulo', 'Santos'};
 
-      final pair = bloc.onSearchEvent('', cache);
+      final result = bloc.onSearchEvent('', cache);
 
-      assertAreEquivalent(pair.result, cache);
-      assertCachesEquivalent(pair.cache, cache);
+      assertAreEquivalent(result, cache);
     });
 
     test('search out of the cache', () {
@@ -30,11 +28,9 @@ void main() {
 
       final cache = {'Rio de Janeiro', 'Sao Paulo', 'Santos'};
 
-      final pair = bloc.onSearchEvent('Miami', cache);
+      final result = bloc.onSearchEvent('Miami', cache);
 
-      expect(pair.result.single, 'Miami');
-      expect(pair.cache.contains('Miami'), true);
-      assertCacheContainedIn(cache, pair.cache);
+      expect(result, isEmpty);
     });
   });
 }
@@ -45,17 +41,6 @@ void assertAreEquivalent(List<String> a, Set<String> b) {
 }
 
 void assertContainedIn(List<String> a, Set<String> b) {
-  for (var item in a) {
-    expect(b.contains(item), true);
-  }
-}
-
-void assertCachesEquivalent(Set<String> a, Set<String> b) {
-  expect(a.length, b.length);
-  assertCacheContainedIn(a, b);
-}
-
-void assertCacheContainedIn(Set<String> a, Set<String> b) {
   for (var item in a) {
     expect(b.contains(item), true);
   }

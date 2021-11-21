@@ -16,16 +16,20 @@ class _CitiesListState extends State<CitiesList> {
 
   @override
   Widget build(BuildContext context) {
-    return StreamBuilder<ResultAndCache>(
+    return StreamBuilder<List<String>>(
         stream: searchEngine.stream,
-        initialData: ResultAndCache(citiesState.toList(), citiesState),
+        initialData: citiesState.toList(),
         builder: (context, snapshot) {
           if (snapshot.hasError) {
             return const Text('Something is wrong');
           } else {
-            return BuildViewList(snapshot.data!.result);
+            return BuildViewList(snapshot.data!);
           }
         });
+  }
+
+  cacheAppend(String cityName) {
+    citiesState.add(cityName);
   }
 }
 
