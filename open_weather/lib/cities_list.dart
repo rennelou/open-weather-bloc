@@ -2,6 +2,8 @@ import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:open_weather/bloc/search_list.dart';
 
+import 'city.dart';
+
 // ignore: must_be_immutable
 class CitiesList extends StatefulWidget {
   Set<String> cache;
@@ -123,7 +125,16 @@ class CitiesListListener extends StatelessWidget {
         padding: const EdgeInsets.all(16.0),
         itemBuilder: (context, i) {
           if (i.isOdd) return const Divider();
-          return ListTile(title: Text(getCity(cities, i), style: _biggerFont));
+          return ListTile(
+            title: Text(getCity(cities, i), style: _biggerFont),
+            onTap: () {
+              Navigator.push(
+                context,
+                MaterialPageRoute(
+                    builder: (context) => City(getCity(cities, i))),
+              );
+            },
+          );
         });
   }
 
