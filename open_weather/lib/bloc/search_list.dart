@@ -1,3 +1,5 @@
+import 'dart:async';
+
 class ResultAndCache {
   List<String> result;
   Set<String> cache;
@@ -6,6 +8,14 @@ class ResultAndCache {
 }
 
 class SearchEngineLogic {
+  final _stream = StreamController<ResultAndCache>();
+  Stream<ResultAndCache> get stream => _stream.stream;
+
+  void searchEventDispatch(String cityName, Set<String> cache) {
+    final pair = onSearchEvent(cityName, cache);
+    _stream.sink.add(pair);
+  }
+
   ResultAndCache onSearchEvent(String cityName, Set<String> cache) {
     final result = search(cityName, cache);
     final newCache = cacheAppend(result, cache);
@@ -29,5 +39,9 @@ class SearchEngineLogic {
     }
 
     return newCache;
+  }
+
+  closeStream() {
+    _stream.close();
   }
 }
