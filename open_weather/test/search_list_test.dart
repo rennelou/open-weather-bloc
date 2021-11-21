@@ -8,7 +8,7 @@ void main() {
 
       final cache = {'Rio de Janeiro', 'Sao Paulo', 'Santos'};
 
-      final result = bloc.onSearchEvent('Sao Paulo', cache);
+      final result = bloc.onSearchEvent('sao paulo', cache);
 
       expect(result.single, 'Sao Paulo');
     });

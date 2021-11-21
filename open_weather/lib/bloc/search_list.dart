@@ -10,19 +10,30 @@ class SearchEngineLogic {
   }
 
   List<String> onSearchEvent(String cityName, Set<String> cache) {
-    return search(cityName, cache);
+    return filter(cityName, cache);
   }
 
-  List<String> search(String cityName, Set<String> cache) {
+  List<String> filter(String cityName, Set<String> cache) {
     if (cityName.isEmpty) {
       return cache.toList();
     }
 
-    if (cache.contains(cityName)) {
-      return [cityName];
+    final value = cacheFind(cache, cityName);
+    if (value != null) {
+      return [value];
     }
 
-    return <String>[];
+    return [];
+  }
+
+  String? cacheFind(Set<String> cache, String cityName) {
+    for (var value in cache) {
+      if (value.toLowerCase() == cityName.toLowerCase()) {
+        return value;
+      }
+    }
+
+    return null;
   }
 
   closeStream() {

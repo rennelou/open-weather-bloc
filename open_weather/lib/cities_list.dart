@@ -18,8 +18,10 @@ class _CitiesListState extends State<CitiesList> {
   Widget build(BuildContext context) {
     return Column(
       children: [
-        const Expanded(child: SearchField()),
-        Expanded(child: CitiesListListener(searchEngine, citiesState.toList()))
+        Expanded(child: SearchField(searchEngine, citiesState)),
+        Expanded(
+            flex: 4,
+            child: CitiesListListener(searchEngine, citiesState.toList()))
       ],
     );
   }
@@ -27,24 +29,53 @@ class _CitiesListState extends State<CitiesList> {
   cacheAppend(String cityName) {
     citiesState.add(cityName);
   }
+
+  @override
+  void dispose() {
+    searchEngine.closeStream();
+    super.dispose();
+  }
 }
 
-class SearchField extends StatelessWidget {
-  const SearchField({Key? key}) : super(key: key);
+class SearchField extends StatefulWidget {
+  final SearchEngineLogic searchEngine;
+  final Set<String> cache;
+
+  const SearchField(this.searchEngine, this.cache, {Key? key})
+      : super(key: key);
+
+  @override
+  _SearchFiledState createState() => _SearchFiledState();
+}
+
+class _SearchFiledState extends State<SearchField> {
+  final textController = TextEditingController();
 
   @override
   Widget build(BuildContext context) {
     return Row(
       mainAxisAlignment: MainAxisAlignment.spaceEvenly,
       children: [
-        const Expanded(child: TextField()),
+        Expanded(
+            child: TextField(
+          controller: textController,
+        )),
         Expanded(
             child: IconButton(
-          onPressed: () {},
+          onPressed: () {
+            widget.searchEngine
+                .searchEventDispatch(textController.text, widget.cache);
+          },
           icon: const Icon(Icons.search),
         ))
       ],
     );
+  }
+
+  @override
+  void dispose() {
+    textController.dispose();
+    super.dispose();
   }
 }
 
