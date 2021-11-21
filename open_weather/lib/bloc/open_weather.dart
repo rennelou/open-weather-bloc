@@ -1,42 +1,69 @@
+import 'dart:async';
+import 'dart:convert';
+
+import 'package:http/http.dart' as http;
+
 abstract class OpenWeatherChannel {
-  double? getTempByName(String cityName);
-  double? getTempByNameNState(String cityName, String stateName);
-  double? getTempByNameNStateNCountry(
-      String cityName, String stateName, String countryName);
+  Future<String> getTempByName(String query);
 }
 
 class OpenWheather {
   final OpenWeatherChannel channel;
 
+  final _stream = StreamController<double>();
+  Stream<double> get stream => _stream.stream;
+
   OpenWheather(this.channel);
 
-  double? getTemperature(String query) {
-    var strings = query.toLowerCase().split(',');
+  Future<void> getTemperatureDispatch(String query) async {
+    final temp = await getTemperature(query);
 
-    if (strings.isNotEmpty) {
-      final value = channel.getTempByName(strings.first);
-      if (value != null) {
-        return value;
-      }
-    }
+    _stream.sink.add(temp!);
+  }
 
-    if (strings.length > 1) {
-      final value = channel.getTempByNameNState(strings[0], strings[1]);
-      if (value != null) {
-        return value;
-      }
-    }
+  Future<double?> getTemperature(String query) async {
+    final value = await channel.getTempByName(query.toLowerCase());
+    return parseTemp(value);
+  }
 
-    if (strings.length > 2) {
-      final value = channel.getTempByNameNStateNCountry(
-          strings[0], strings[1], strings[2]);
-      if (value != null) {
-        return value;
+  double? parseTemp(String responseBody) {
+    try {
+      final json = jsonDecode(responseBody);
+
+      if (json.containsKey('main')) {
+        final mainField = json['main']!;
+
+        if (mainField.containsKey('temp')) {
+          return mainField['temp'] as double;
+        }
       }
-    }
+    } on Exception catch (_) {}
 
     return null;
   }
 }
 
-class ImpOpenWeatherChannel {}
+class ImpOpenWeatherChannel extends OpenWeatherChannel {
+  final String apiKey;
+
+  ImpOpenWeatherChannel(this.apiKey);
+
+  @override
+  Future<String> getTempByName(String query) async {
+    var client = http.Client();
+    try {
+      final response = await client.get(Uri.parse(uri(query)));
+      if (response.statusCode == 200) {
+        return response.body;
+      }
+    } finally {
+      client.close();
+    }
+
+    return '';
+  }
+
+  String uri(String query) {
+    return 'https://api.openweathermap.org/data/2.5/weather?q=$query&appid=$apiKey';
+  }
+}

@@ -1,5 +1,6 @@
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
+import 'package:open_weather/bloc/open_weather.dart';
 import 'package:open_weather/bloc/search_list.dart';
 
 import 'city.dart';
@@ -100,10 +101,14 @@ class _SearchFiledState extends State<SearchField> {
 
 class CitiesListListener extends StatelessWidget {
   final _biggerFont = const TextStyle(fontSize: 18.0);
+
   final SearchEngineLogic searchEngine;
+  final OpenWheather openWheather =
+      OpenWheather(ImpOpenWeatherChannel('apikeu'));
+
   final List<String> initialState;
 
-  const CitiesListListener(this.searchEngine, this.initialState, {Key? key})
+  CitiesListListener(this.searchEngine, this.initialState, {Key? key})
       : super(key: key);
 
   @override
@@ -127,11 +132,12 @@ class CitiesListListener extends StatelessWidget {
           if (i.isOdd) return const Divider();
           return ListTile(
             title: Text(getCity(cities, i), style: _biggerFont),
-            onTap: () {
+            onTap: () async {
+              final temp =
+                  await openWheather.getTemperature(getCity(cities, i));
               Navigator.push(
                 context,
-                MaterialPageRoute(
-                    builder: (context) => City(getCity(cities, i))),
+                MaterialPageRoute(builder: (context) => City(temp.toString())),
               );
             },
           );
