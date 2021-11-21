@@ -41,10 +41,22 @@ void main() {
 
       final cache = {'Rio de Janeiro', 'Sao Paulo', 'Santos'};
 
-      final listToAppend = ['Santos'];
+      final listToAppend = ['Rio de Janeiro', 'Santos', 'Sao Paulo'];
       final newCache = bloc.cacheAppend(listToAppend, cache);
 
       assertCachesEquivalent(newCache, cache);
+    });
+
+    test('append new value', () {
+      final bloc = BusinessLogic();
+
+      final cache = {'Rio de Janeiro', 'Sao Paulo', 'Santos'};
+
+      final listToAppend = ['Miami', 'Taipei'];
+      final newCache = bloc.cacheAppend(listToAppend, cache);
+
+      assertContainedIn(listToAppend, newCache);
+      assertCacheContainedIn(cache, newCache);
     });
   });
 }
