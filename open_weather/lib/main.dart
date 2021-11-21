@@ -34,9 +34,7 @@ class _MyHomePageState extends State<MyHomePage> {
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(title: Text(widget.title)),
-      body: Center(
-          child: CitiesList(
-              {'Curitiba, BR', 'Sydney, AU', 'London, GB', 'London, CA'})),
+      body: Center(child: CitiesList()),
     );
   }
 }

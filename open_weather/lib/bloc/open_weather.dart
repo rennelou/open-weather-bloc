@@ -10,15 +10,16 @@ abstract class OpenWeatherChannel {
 class OpenWheather {
   final OpenWeatherChannel channel;
 
-  final _stream = StreamController<double>();
-  Stream<double> get stream => _stream.stream;
+  final _stream = StreamController<String>.broadcast();
+  Stream<String> get stream => _stream.stream;
 
   OpenWheather(this.channel);
 
   Future<void> getTemperatureDispatch(String query) async {
     final temp = await getTemperature(query);
 
-    _stream.sink.add(temp!);
+    _stream.sink
+        .add(temp != null ? temp.toString() : 'error getting the temperature');
   }
 
   Future<double?> getTemperature(String query) async {
@@ -40,6 +41,10 @@ class OpenWheather {
     } on Exception catch (_) {}
 
     return null;
+  }
+
+  closeStream() {
+    _stream.close();
   }
 }
 

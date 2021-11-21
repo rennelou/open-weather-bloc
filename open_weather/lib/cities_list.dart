@@ -5,11 +5,8 @@ import 'package:open_weather/bloc/search_list.dart';
 
 import 'city.dart';
 
-// ignore: must_be_immutable
 class CitiesList extends StatefulWidget {
-  Set<String> cache;
-
-  CitiesList(this.cache, {Key? key}) : super(key: key);
+  const CitiesList({Key? key}) : super(key: key);
 
   @override
   State<CitiesList> createState() => _CitiesListState();
@@ -18,27 +15,32 @@ class CitiesList extends StatefulWidget {
 class _CitiesListState extends State<CitiesList> {
   SearchEngineLogic searchEngine = SearchEngineLogic();
 
+  Set<String> cache = {
+    'Curitiba, BR',
+    'Sydney, AU',
+    'London, GB',
+    'London, CA'
+  };
+
   @override
   Widget build(BuildContext context) {
     return Column(
       children: [
+        Expanded(child: SearchField(searchEngine, cache, cacheStatesAppend)),
         Expanded(
-            child: SearchField(searchEngine, widget.cache, cacheStatesAppend)),
-        Expanded(
-            flex: 4,
-            child: CitiesListListener(searchEngine, widget.cache.toList()))
+            flex: 4, child: CitiesListListener(searchEngine, cache.toList()))
       ],
     );
   }
 
   cacheStatesAppend(String cityName) {
     if (!cacheContains(cityName)) {
-      widget.cache.add(cityName);
+      cache.add(cityName);
     }
   }
 
   bool cacheContains(String cityName) {
-    for (var item in widget.cache) {
+    for (var item in cache) {
       if (item.toLowerCase() == cityName.toLowerCase()) {
         return true;
       }
@@ -104,7 +106,7 @@ class CitiesListListener extends StatelessWidget {
 
   final SearchEngineLogic searchEngine;
   final OpenWheather openWheather =
-      OpenWheather(ImpOpenWeatherChannel('apikeu'));
+      OpenWheather(ImpOpenWeatherChannel('apikey'));
 
   final List<String> initialState;
 
@@ -133,11 +135,12 @@ class CitiesListListener extends StatelessWidget {
           return ListTile(
             title: Text(getCity(cities, i), style: _biggerFont),
             onTap: () async {
-              final temp =
-                  await openWheather.getTemperature(getCity(cities, i));
+              openWheather.getTemperatureDispatch(getCity(cities, i));
               Navigator.push(
                 context,
-                MaterialPageRoute(builder: (context) => City(temp.toString())),
+                MaterialPageRoute(
+                    builder: (context) =>
+                        City(getCity(cities, i), openWheather)),
               );
             },
           );
