@@ -1,3 +1,5 @@
+import 'package:open_weather/open_weather_channel.dart';
+
 class Weather {
   String city;
 
@@ -12,23 +14,27 @@ class ResultAndCache {
 }
 
 class BusinessLogic {
-  int value = 0;
+  OpenWeatherChannel openWeather;
+
+  BusinessLogic(this.openWeather);
 
   // Resultado final será
   // values = search(cityName, cache)
   // cache = cacheAppend(values, cache)
   // return WeatherAndCache(values, cache)
 
-  List<Weather> search(String searchName, Map<String, Weather> cache) {
-    if (searchName.isEmpty) {
+  List<Weather> search(String cityName, Map<String, Weather> cache) {
+    if (cityName.isEmpty) {
       return cache.values.toList();
     }
 
-    if (cache.containsKey(searchName)) {
-      final value = cache[searchName];
-      if (value != null) {
-        return [value];
-      }
+    if (cache.containsKey(cityName)) {
+      return [cache[cityName] as Weather];
+    }
+
+    final value = openWeather.getWeather(cityName);
+    if (value != null) {
+      return [value];
     }
 
     return <Weather>[];
