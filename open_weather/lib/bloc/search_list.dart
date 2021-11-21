@@ -6,11 +6,6 @@ class ResultAndCache {
 }
 
 class SearchEngineLogic {
-  // Resultado final será
-  // values = search(cityName, cache)
-  // cache = cacheAppend(values, cache)
-  // return ResultAndCache(values, cache)
-
   ResultAndCache onSearchEvent(String cityName, Set<String> cache) {
     final result = search(cityName, cache);
     final newCache = cacheAppend(result, cache);
