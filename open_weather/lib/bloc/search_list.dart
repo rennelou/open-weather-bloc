@@ -5,11 +5,18 @@ class ResultAndCache {
   ResultAndCache(this.result, this.cache);
 }
 
-class BusinessLogic {
+class SearchEngineLogic {
   // Resultado final será
   // values = search(cityName, cache)
   // cache = cacheAppend(values, cache)
   // return ResultAndCache(values, cache)
+
+  ResultAndCache onSearchEvent(String cityName, Set<String> cache) {
+    final result = search(cityName, cache);
+    final newCache = cacheAppend(result, cache);
+
+    return ResultAndCache(result, newCache);
+  }
 
   List<String> search(String cityName, Set<String> cache) {
     if (cityName.isEmpty) {

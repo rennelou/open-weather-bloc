@@ -2,61 +2,39 @@ import 'package:flutter_test/flutter_test.dart';
 import 'package:open_weather/bloc/search_list.dart';
 
 void main() {
-  group('Search', () {
-    test('filter city in cache', () {
-      final bloc = BusinessLogic();
+  group('search list tests', () {
+    test('alredy in cache', () {
+      final bloc = SearchEngineLogic();
 
       final cache = {'Rio de Janeiro', 'Sao Paulo', 'Santos'};
 
-      final result = bloc.search('Rio de Janeiro', cache).single;
+      final pair = bloc.onSearchEvent('Sao Paulo', cache);
 
-      expect(result, 'Rio de Janeiro');
+      expect(pair.result.single, 'Sao Paulo');
+      assertCachesEquivalent(pair.cache, cache);
     });
 
     test('without filter', () {
-      final bloc = BusinessLogic();
+      final bloc = SearchEngineLogic();
 
       final cache = {'Rio de Janeiro', 'Sao Paulo', 'Santos'};
 
-      final result = bloc.search('', cache);
+      final pair = bloc.onSearchEvent('', cache);
 
-      assertAreEquivalent(result, cache);
+      assertAreEquivalent(pair.result, cache);
+      assertCachesEquivalent(pair.cache, cache);
     });
 
     test('search out of the cache', () {
-      final bloc = BusinessLogic();
+      final bloc = SearchEngineLogic();
 
       final cache = {'Rio de Janeiro', 'Sao Paulo', 'Santos'};
 
-      final result = bloc.search('Miami', cache).single;
+      final pair = bloc.onSearchEvent('Miami', cache);
 
-      expect(result, 'Miami');
-      assertNotContainedIn(result, cache);
-    });
-  });
-
-  group('Cache', () {
-    test('nothing change', () {
-      final bloc = BusinessLogic();
-
-      final cache = {'Rio de Janeiro', 'Sao Paulo', 'Santos'};
-
-      final listToAppend = ['Rio de Janeiro', 'Santos', 'Sao Paulo'];
-      final newCache = bloc.cacheAppend(listToAppend, cache);
-
-      assertCachesEquivalent(newCache, cache);
-    });
-
-    test('append new value', () {
-      final bloc = BusinessLogic();
-
-      final cache = {'Rio de Janeiro', 'Sao Paulo', 'Santos'};
-
-      final listToAppend = ['Miami', 'Taipei'];
-      final newCache = bloc.cacheAppend(listToAppend, cache);
-
-      assertContainedIn(listToAppend, newCache);
-      assertCacheContainedIn(cache, newCache);
+      expect(pair.result.single, 'Miami');
+      expect(pair.cache.contains('Miami'), true);
+      assertCacheContainedIn(cache, pair.cache);
     });
   });
 }
@@ -70,11 +48,6 @@ void assertContainedIn(List<String> a, Set<String> b) {
   for (var item in a) {
     expect(b.contains(item), true);
   }
-}
-
-void assertNotContainedIn(String str, Set<String> b) {
-  expect(str, isNotNull);
-  expect(b.contains(str), false);
 }
 
 void assertCachesEquivalent(Set<String> a, Set<String> b) {
