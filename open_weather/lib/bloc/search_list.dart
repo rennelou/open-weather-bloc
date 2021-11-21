@@ -28,7 +28,7 @@ class SearchEngineLogic {
 
   String? cacheFind(Set<String> cache, String cityName) {
     for (var value in cache) {
-      if (value.toLowerCase() == cityName.toLowerCase()) {
+      if (value.toLowerCase().contains(cityName.toLowerCase())) {
         return value;
       }
     }

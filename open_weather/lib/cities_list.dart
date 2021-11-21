@@ -36,7 +36,7 @@ class _CitiesListState extends State<CitiesList> {
 
   bool cacheContains(String cityName) {
     for (var item in cache) {
-      if (item.toLowerCase() == cityName.toLowerCase()) {
+      if (item.toLowerCase().contains(cityName.toLowerCase())) {
         return true;
       }
     }
