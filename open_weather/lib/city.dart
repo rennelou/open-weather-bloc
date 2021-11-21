@@ -2,6 +2,7 @@ import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 
 import 'bloc/open_weather.dart';
+import 'config.dart';
 
 class City extends StatefulWidget {
   final String cityName;
@@ -14,7 +15,7 @@ class City extends StatefulWidget {
 
 class _CityState extends State<City> {
   final OpenWheather openWheather =
-      OpenWheather(ImpOpenWeatherChannel('apikey'));
+      OpenWheather(ImpOpenWeatherChannel(Config.apiKey));
 
   @override
   Widget build(BuildContext context) {

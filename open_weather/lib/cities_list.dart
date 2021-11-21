@@ -1,6 +1,7 @@
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:open_weather/bloc/search_list.dart';
+import 'package:open_weather/config.dart';
 
 import 'city.dart';
 
@@ -14,12 +15,7 @@ class CitiesList extends StatefulWidget {
 class _CitiesListState extends State<CitiesList> {
   SearchEngineLogic searchEngine = SearchEngineLogic();
 
-  Set<String> cache = {
-    'Curitiba, BR',
-    'Sydney, AU',
-    'London, GB',
-    'London, CA'
-  };
+  Set<String> cache = Config.initialCache.toSet();
 
   @override
   Widget build(BuildContext context) {
