@@ -2,8 +2,11 @@ import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:open_weather/bloc/search_list.dart';
 
+// ignore: must_be_immutable
 class CitiesList extends StatefulWidget {
-  const CitiesList({Key? key}) : super(key: key);
+  Set<String> cache;
+
+  CitiesList(this.cache, {Key? key}) : super(key: key);
 
   @override
   State<CitiesList> createState() => _CitiesListState();
@@ -12,22 +15,33 @@ class CitiesList extends StatefulWidget {
 class _CitiesListState extends State<CitiesList> {
   SearchEngineLogic searchEngine = SearchEngineLogic();
 
-  var citiesState = {'Curitiba, BR', 'Sydney, AU', 'London, GB', 'London, CA'};
-
   @override
   Widget build(BuildContext context) {
     return Column(
       children: [
-        Expanded(child: SearchField(searchEngine, citiesState)),
+        Expanded(
+            child: SearchField(searchEngine, widget.cache, cacheStatesAppend)),
         Expanded(
             flex: 4,
-            child: CitiesListListener(searchEngine, citiesState.toList()))
+            child: CitiesListListener(searchEngine, widget.cache.toList()))
       ],
     );
   }
 
-  cacheAppend(String cityName) {
-    citiesState.add(cityName);
+  cacheStatesAppend(String cityName) {
+    if (!cacheContains(cityName)) {
+      widget.cache.add(cityName);
+    }
+  }
+
+  bool cacheContains(String cityName) {
+    for (var item in widget.cache) {
+      if (item.toLowerCase() == cityName.toLowerCase()) {
+        return true;
+      }
+    }
+
+    return false;
   }
 
   @override
@@ -40,8 +54,9 @@ class _CitiesListState extends State<CitiesList> {
 class SearchField extends StatefulWidget {
   final SearchEngineLogic searchEngine;
   final Set<String> cache;
+  final Function(String) updateCache;
 
-  const SearchField(this.searchEngine, this.cache, {Key? key})
+  const SearchField(this.searchEngine, this.cache, this.updateCache, {Key? key})
       : super(key: key);
 
   @override
@@ -63,6 +78,8 @@ class _SearchFiledState extends State<SearchField> {
         Expanded(
             child: IconButton(
           onPressed: () {
+            widget.updateCache(textController.text);
+
             widget.searchEngine
                 .searchEventDispatch(textController.text, widget.cache);
           },
