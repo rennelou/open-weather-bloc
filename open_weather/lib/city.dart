@@ -3,13 +3,23 @@ import 'package:flutter/material.dart';
 
 import 'bloc/open_weather.dart';
 
-class City extends StatelessWidget {
+class City extends StatefulWidget {
   final String cityName;
-  final OpenWheather openWheather;
-  const City(this.cityName, this.openWheather, {Key? key}) : super(key: key);
+
+  const City(this.cityName, {Key? key}) : super(key: key);
+
+  @override
+  State<StatefulWidget> createState() => _CityState();
+}
+
+class _CityState extends State<City> {
+  final OpenWheather openWheather =
+      OpenWheather(ImpOpenWeatherChannel('apikey'));
 
   @override
   Widget build(BuildContext context) {
+    openWheather.getTemperatureDispatch(widget.cityName);
+
     return Scaffold(
       appBar: AppBar(
         title: const Text("Second Route"),
@@ -18,7 +28,7 @@ class City extends StatelessWidget {
           child: Row(
         mainAxisAlignment: MainAxisAlignment.spaceEvenly,
         children: [
-          Text(cityName),
+          Text(widget.cityName),
           StreamBuilder<String>(
             stream: openWheather.stream,
             initialData: 'Loading',
@@ -34,5 +44,11 @@ class City extends StatelessWidget {
         ],
       )),
     );
+  }
+
+  @override
+  void dispose() {
+    openWheather.closeStream();
+    super.dispose();
   }
 }

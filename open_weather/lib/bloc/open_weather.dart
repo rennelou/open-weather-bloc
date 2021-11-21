@@ -10,7 +10,7 @@ abstract class OpenWeatherChannel {
 class OpenWheather {
   final OpenWeatherChannel channel;
 
-  final _stream = StreamController<String>.broadcast();
+  final _stream = StreamController<String>();
   Stream<String> get stream => _stream.stream;
 
   OpenWheather(this.channel);

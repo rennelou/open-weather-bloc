@@ -1,6 +1,5 @@
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
-import 'package:open_weather/bloc/open_weather.dart';
 import 'package:open_weather/bloc/search_list.dart';
 
 import 'city.dart';
@@ -105,12 +104,9 @@ class CitiesListListener extends StatelessWidget {
   final _biggerFont = const TextStyle(fontSize: 18.0);
 
   final SearchEngineLogic searchEngine;
-  final OpenWheather openWheather =
-      OpenWheather(ImpOpenWeatherChannel('apikey'));
-
   final List<String> initialState;
 
-  CitiesListListener(this.searchEngine, this.initialState, {Key? key})
+  const CitiesListListener(this.searchEngine, this.initialState, {Key? key})
       : super(key: key);
 
   @override
@@ -135,12 +131,10 @@ class CitiesListListener extends StatelessWidget {
           return ListTile(
             title: Text(getCity(cities, i), style: _biggerFont),
             onTap: () async {
-              openWheather.getTemperatureDispatch(getCity(cities, i));
               Navigator.push(
                 context,
                 MaterialPageRoute(
-                    builder: (context) =>
-                        City(getCity(cities, i), openWheather)),
+                    builder: (context) => City(getCity(cities, i))),
               );
             },
           );
