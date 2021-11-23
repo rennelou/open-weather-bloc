@@ -17,13 +17,13 @@ class SearchCities {
   }
 
   ResultsAndCache onSearchEvent(String cityName, Set<String> cache) {
-    final results = filter(cityName, cache);
+    final results = search(cityName, cache);
     final newCache = mergeResultsAndCache(results, cache);
 
     return ResultsAndCache(results, newCache);
   }
 
-  List<String> filter(String cityName, Set<String> cache) {
+  List<String> search(String cityName, Set<String> cache) {
     if (cityName.isEmpty) {
       return cache.toList();
     }

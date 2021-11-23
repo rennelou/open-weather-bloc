@@ -29,7 +29,7 @@ class OpenWeatherChannelMock extends OpenWeatherChannel {
   OpenWeatherChannelMock(this.data);
 
   @override
-  Future<String> getTempByName(String cityName) {
+  Future<String> getTemperatureOnOpenWeather(String cityName) {
     return Future.delayed(const Duration(), () => response(cityName));
   }
 

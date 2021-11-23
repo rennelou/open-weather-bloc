@@ -19,7 +19,7 @@ class _CityState extends State<City> {
 
   @override
   Widget build(BuildContext context) {
-    openWheather.getTemperatureDispatch(widget.cityName);
+    openWheather.getTemperatureEventDispatch(widget.cityName);
 
     return Scaffold(
       appBar: AppBar(
