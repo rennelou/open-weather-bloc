@@ -117,7 +117,7 @@ class CitiesList extends StatelessWidget {
               Navigator.push(
                 context,
                 MaterialPageRoute(
-                    builder: (context) => City(getCity(cities, i))),
+                    builder: (context) => CityPage(getCity(cities, i))),
               );
             },
           );

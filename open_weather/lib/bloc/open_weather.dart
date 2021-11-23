@@ -31,7 +31,7 @@ class OpenWheather {
 abstract class OpenWeatherChannel {
   Future<double?> getTemperature(String query) async {
     final value = await getTemperatureOnOpenWeather(query.toLowerCase());
-    return parseTemperature(value);
+    return tryParseTemperature(value);
   }
 
   Future<String> getTemperatureOnOpenWeather(String query);
@@ -67,16 +67,26 @@ class ImpOpenWeatherChannel extends OpenWeatherChannel {
 
   @override
   Future<String> getTemperatureOnOpenWeather(String query) async {
+    return await tryGetOnOpenWeather(query);
+  }
+
+  Future<String> tryGetOnOpenWeather(String query) async {
     var client = http.Client();
     try {
-      final response = await client.get(Uri.parse(uri(query)));
-      if (response.statusCode == 200) {
-        return response.body;
-      }
+      return await getOnOpenWeather(client, query);
     } on Exception catch (e) {
       log(e.toString());
     } finally {
       client.close();
+    }
+
+    return '';
+  }
+
+  Future<String> getOnOpenWeather(http.Client client, String query) async {
+    final response = await client.get(Uri.parse(uri(query)));
+    if (response.statusCode == 200) {
+      return response.body;
     }
 
     return '';

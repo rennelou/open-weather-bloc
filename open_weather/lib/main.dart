@@ -1,5 +1,5 @@
 import 'package:flutter/material.dart';
-import 'package:open_weather/cities_list.dart';
+import 'package:open_weather/pages/cities_list.dart';
 
 void main() {
   runApp(const MyApp());

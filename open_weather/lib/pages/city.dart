@@ -1,19 +1,19 @@
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 
-import 'bloc/open_weather.dart';
-import 'config.dart';
+import '../bloc/open_weather.dart';
+import '../config.dart';
 
-class City extends StatefulWidget {
+class CityPage extends StatefulWidget {
   final String cityName;
 
-  const City(this.cityName, {Key? key}) : super(key: key);
+  const CityPage(this.cityName, {Key? key}) : super(key: key);
 
   @override
-  State<StatefulWidget> createState() => _CityState();
+  State<StatefulWidget> createState() => _CityPageState();
 }
 
-class _CityState extends State<City> {
+class _CityPageState extends State<CityPage> {
   final OpenWheather openWheather =
       OpenWheather(ImpOpenWeatherChannel(Config.apiKey));
 
